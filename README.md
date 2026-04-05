@@ -4,6 +4,8 @@
 
 **Agentic Maya** — Governed multi-agent orchestration with YAML pipelines, policies, and skills for enterprise-grade AI workflows.
 
+website: [Agentic Maya](https://agentic-maya.vercel.app/)
+
 ## What It Does
 
 Agentic Maya provides a secure, auditable framework for running multi-agent AI pipelines with built-in governance, memory management, and human oversight. It's designed for production use cases requiring compliance, traceability, and safety.
@@ -82,12 +84,12 @@ maya audit <session_id>
 
 ## Documentation
 
-📖 **[Full Documentation](website/index.html)** - Complete guides and API reference
+📖 **[Full Documentation](https://agentic-maya.vercel.app/)** - Complete guides and API reference
 
-- [Core Concepts](website/docs/index.html)
-- [Pipeline Guide](website/docs/pipelines.html)
-- [Policy Reference](website/docs/policies.html)
-- [Skills Registry](website/docs/skills.html)
+- [Core Concepts](https://agentic-maya.vercel.app/docs)
+- [Pipeline Guide](https://agentic-maya.vercel.app/pipelines)
+- [Policy Reference](https://agentic-maya.vercel.app/policies)
+- [Skills Registry](https://agentic-maya.vercel.app/skills)
 
 ## Project Structure
 
