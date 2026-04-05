@@ -5,7 +5,7 @@
 
 **Agentic Maya** — Governed multi-agent orchestration with YAML pipelines, policies, and skills for enterprise-grade AI workflows.
 
-website:[Agentic Maya](https://agentic-maya.vercel.app/)
+website: [Agentic Maya](https://agentic-maya.vercel.app/)
 
 ## What It Does
 
