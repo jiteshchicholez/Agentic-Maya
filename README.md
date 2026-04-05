@@ -82,12 +82,12 @@ myna audit <session_id>
 
 ## Documentation
 
-📖 **[Full Documentation](agentic-maya.vercel.app)** - Complete guides and API reference
+📖 **[Full Documentation](https://agentic-maya.vercel.app/)** - Complete guides and API reference
 
 - [Core Concepts](https://agentic-maya.vercel.app/docs/)
-- [Pipeline Guide](https://agentic-maya.vercel.app/pipelines)
-- [Policy Reference](https://agentic-maya.vercel.app/policies)
-- [Skills Registry](https://agentic-maya.vercel.app/skills)
+- [Pipeline Guide](https://agentic-maya.vercel.app/pipelines/)
+- [Policy Reference](https://agentic-maya.vercel.app/policies/)
+- [Skills Registry](https://agentic-maya.vercel.app/skills/)
 
 ## Project Structure
 
