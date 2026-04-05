@@ -65,8 +65,8 @@ Critical escalation is triggered by any of:
 - **T+30 minutes**: Response/mitigation required
 
 ## Related Policies
-- `myna.audit_all_actions` - Complete incident logging
-- `myna.budget_ceiling` - Global cost limits
+- `maya.audit_all_actions` - Complete incident logging
+- `maya.budget_ceiling` - Global cost limits
 - Incident response procedures
 - Service level agreements (SLAs)
 

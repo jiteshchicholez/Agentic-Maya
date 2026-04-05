@@ -6,9 +6,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from myna.governance import ActionRequest, BudgetTracker, GovernanceEngine
-from myna.policy import PolicyEngine, builtin_policies
-from myna.schemas import GlobalBudgetBlock, SpawnAgentBlock
+from maya.governance import ActionRequest, BudgetTracker, GovernanceEngine
+from maya.policy import PolicyEngine, builtin_policies
+from maya.schemas import GlobalBudgetBlock, SpawnAgentBlock
 
 
 def build_agent() -> SpawnAgentBlock:
@@ -23,7 +23,7 @@ def build_agent() -> SpawnAgentBlock:
             "local_or_cloud": "local",
             "system_prompt": "test",
             "permissions": {
-                "tools": ["myna.file_write"],
+                "tools": ["maya.file_write"],
                 "memory": "write",
                 "spawn_agents": False,
                 "external_calls": False,
@@ -89,7 +89,7 @@ class GovernanceTests(unittest.TestCase):
                 type="tool",
                 summary="Write a report file",
                 risk_level="LOW",
-                tool_name="myna.file_write",
+                tool_name="maya.file_write",
                 file_path="..\\escape.txt",
             ),
             root_intent="Write a report file",

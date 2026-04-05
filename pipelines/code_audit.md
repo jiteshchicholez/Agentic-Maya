@@ -44,8 +44,8 @@ The Code Audit Pipeline provides comprehensive analysis of codebases, combining 
 - **Tool Calls**: Max 60 per pipeline execution
 
 ## Governance
-- Enforces complete audit trail via `myna.audit_all_actions`
-- Maintains cost controls via `myna.budget_ceiling`
+- Enforces complete audit trail via `maya.audit_all_actions`
+- Maintains cost controls via `maya.budget_ceiling`
 - Requires critic approval for high-risk findings
 
 ## Output

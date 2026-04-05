@@ -11,9 +11,9 @@ outputs:
   - key_points
   - metadata
 required_tools:
-  - myna.file_read
-  - myna.summarize
-  - myna.memory_write
+  - maya.file_read
+  - maya.summarize
+  - maya.memory_write
 required_permissions:
   - file_access
   - memory.write

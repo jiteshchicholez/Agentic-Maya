@@ -23,15 +23,15 @@ agents:
       3. Delegate quality metrics to quality evaluator
       4. Synthesize findings into comprehensive audit report
     skills:
-      - "myna.checkpoint"
-      - "myna.summarize"
-      - "myna.file_read"
+      - "maya.checkpoint"
+      - "maya.summarize"
+      - "maya.file_read"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.checkpoint"
-        - "myna.summarize"
-        - "myna.file_read"
+        - "maya.checkpoint"
+        - "maya.summarize"
+        - "maya.file_read"
       memory: "write"
       spawn_agents: true
       external_calls: false
@@ -60,13 +60,13 @@ agents:
       4. Scalability considerations
       Provide findings with severity levels: CRITICAL, HIGH, MEDIUM, LOW, INFO.
     skills:
-      - "myna.file_read"
-      - "myna.memory_write"
+      - "maya.file_read"
+      - "maya.memory_write"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.file_read"
-        - "myna.memory_write"
+        - "maya.file_read"
+        - "maya.memory_write"
       memory: "write"
       spawn_agents: false
       external_calls: false
@@ -95,13 +95,13 @@ agents:
       4. Data protection gaps
       Rate findings with CVSS severity scoring.
     skills:
-      - "myna.file_read"
-      - "myna.memory_write"
+      - "maya.file_read"
+      - "maya.memory_write"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.file_read"
-        - "myna.memory_write"
+        - "maya.file_read"
+        - "maya.memory_write"
       memory: "write"
       spawn_agents: false
       external_calls: false
@@ -130,13 +130,13 @@ agents:
       4. Adherence to coding standards
       Provide actionable improvement recommendations.
     skills:
-      - "myna.file_read"
-      - "myna.memory_read"
+      - "maya.file_read"
+      - "maya.memory_read"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.file_read"
-        - "myna.memory_read"
+        - "maya.file_read"
+        - "maya.memory_read"
       memory: "read"
       spawn_agents: false
       external_calls: false
@@ -211,9 +211,9 @@ global_budget:
   max_wall_time_sec: 900
 
 global_policies:
-  - "myna.audit_all_actions"
-  - "myna.budget_ceiling"
-  - "myna.require_critic_for_high_risk"
+  - "maya.audit_all_actions"
+  - "maya.budget_ceiling"
+  - "maya.require_critic_for_high_risk"
   - "org.pii_block"
   - "org.external_call_gate"
   - "org.critical_escalation"

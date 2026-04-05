@@ -19,7 +19,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Agents**: 3 (review_orchestrator, content_specialist, policy_reviewer)
 - **Flow Steps**: 4
 - **Global Budget**: $1.50 USD, 32,768 tokens
-- **Global Policies**: myna.audit_all_actions, myna.budget_ceiling, myna.no_external_without_permission, org.pii_block, org.external_call_gate, org.critical_escalation
+- **Global Policies**: maya.audit_all_actions, maya.budget_ceiling, maya.no_external_without_permission, org.pii_block, org.external_call_gate, org.critical_escalation
 - **File**: [pipelines/document_review.yml](../pipelines/document_review.yml)
 
 #### code_audit
@@ -27,7 +27,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Agents**: 4 (audit_orchestrator, architecture_analyst, security_reviewer, quality_evaluator)
 - **Flow Steps**: 5
 - **Global Budget**: $2.50 USD, 65,536 tokens
-- **Global Policies**: myna.audit_all_actions, myna.budget_ceiling, myna.require_critic_for_high_risk, org.pii_block, org.external_call_gate, org.critical_escalation
+- **Global Policies**: maya.audit_all_actions, maya.budget_ceiling, maya.require_critic_for_high_risk, org.pii_block, org.external_call_gate, org.critical_escalation
 - **File**: [pipelines/code_audit.yml](../pipelines/code_audit.yml)
 
 #### data_enrichment
@@ -35,7 +35,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Agents**: 4 (enrichment_orchestrator, validation_specialist, enrichment_specialist, qa_agent)
 - **Flow Steps**: 5
 - **Global Budget**: $1.25 USD, 32,768 tokens
-- **Global Policies**: myna.audit_all_actions, myna.budget_ceiling, myna.no_external_without_permission, org.pii_block, org.external_call_gate, org.critical_escalation
+- **Global Policies**: maya.audit_all_actions, maya.budget_ceiling, maya.no_external_without_permission, org.pii_block, org.external_call_gate, org.critical_escalation
 - **File**: [pipelines/data_enrichment.yml](../pipelines/data_enrichment.yml)
 
 ---
@@ -112,7 +112,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Audit Required**: Yes
 - **Supported Formats**: md, txt, json, yaml, py
 - **Performance SLO**: 30 seconds
-- **Tools**: myna.file_read, myna.summarize, myna.memory_write
+- **Tools**: maya.file_read, maya.summarize, maya.memory_write
 - **File**: [skills/file_summarizer.yml](../skills/file_summarizer.yml)
 
 #### agentic.data_validator
@@ -121,7 +121,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Audit Required**: Yes
 - **Supported Schemas**: json-schema, avro, custom
 - **Performance SLO**: 45 seconds
-- **Tools**: myna.memory_read, myna.memory_write, myna.audit_query
+- **Tools**: maya.memory_read, maya.memory_write, maya.audit_query
 - **File**: [skills/data_validator.yml](../skills/data_validator.yml)
 
 #### agentic.report_writer
@@ -130,7 +130,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Audit Required**: Yes
 - **Output Formats**: markdown, json, html, pdf
 - **Performance SLO**: 60 seconds
-- **Tools**: myna.file_write, myna.memory_read, myna.summarize
+- **Tools**: maya.file_write, maya.memory_read, maya.summarize
 - **File**: [skills/report_writer.yml](../skills/report_writer.yml)
 
 #### agentic.semantic_search
@@ -140,7 +140,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 - **Embedding Model**: text-embedding-3-small
 - **Performance SLO**: 25 seconds
 - **Search Scopes**: documents, code, memory, workspace
-- **Tools**: myna.file_read, myna.memory_read, myna.summarize
+- **Tools**: maya.file_read, maya.memory_read, maya.summarize
 - **File**: [skills/semantic_search.yml](../skills/semantic_search.yml)
 
 ---
@@ -159,7 +159,7 @@ Complete catalog of all governance, pipeline, policy, and skill artifacts.
 ## File Organization
 
 ```
-agenticmyna/
+agenticmaya/
 ├── artifacts/
 │   └── index.md                    (This file)
 ├── pipelines/
@@ -188,7 +188,7 @@ agenticmyna/
 │   ├── semantic_search.yml
 │   └── semantic_search.md
 └── src/
-    └── myna/
+    └── maya/
         ├── __init__.py
         ├── cli.py
         ├── config.py
@@ -210,8 +210,8 @@ agenticmyna/
 ### Policy Enforcement
 
 All pipelines include the following mandatory governance policies:
-- **myna.audit_all_actions** - Complete audit trail of all actions
-- **myna.budget_ceiling** - Global budget enforcement
+- **maya.audit_all_actions** - Complete audit trail of all actions
+- **maya.budget_ceiling** - Global budget enforcement
 - **org.pii_block** - PII protection (GDPR/CCPA/HIPAA)
 - **org.external_call_gate** - External communication control
 - **org.critical_escalation** - Automatic incident escalation

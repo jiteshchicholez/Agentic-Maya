@@ -5,8 +5,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from myna.enums import LocalOrCloud
-from myna.utils import ensure_dir
+from maya.enums import LocalOrCloud
+from maya.utils import ensure_dir
 
 
 class ProviderConfig(BaseModel):
@@ -20,7 +20,7 @@ class ProviderConfig(BaseModel):
 
 
 class PathsConfig(BaseModel):
-    session_root: str = ".myna/sessions"
+    session_root: str = ".maya/sessions"
     skill_dir: str = "skills"
     policy_dir: str = "policies"
     pipeline_dir: str = "pipelines"
@@ -40,7 +40,7 @@ class AppConfig(BaseModel):
         return ensure_dir(project_root / self.paths.session_root)
 
 
-def load_config(project_root: Path, config_name: str = "myna.toml") -> AppConfig:
+def load_config(project_root: Path, config_name: str = "maya.toml") -> AppConfig:
     config_path = project_root / config_name
     if not config_path.exists():
         return AppConfig()

@@ -3,8 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from myna.enums import PolicyAction, PolicyScope
-from myna.schemas import PolicyDefinition
+from maya.enums import PolicyAction, PolicyScope
+from maya.schemas import PolicyDefinition
 
 
 def _resolve_var(context: dict[str, Any], path: str) -> Any:

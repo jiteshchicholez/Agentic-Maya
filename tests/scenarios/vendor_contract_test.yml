@@ -90,7 +90,7 @@ pass_fail_criteria:
 
 # Audit Trail Expectations
 audit_expectations:
-  # Should be present in myna audit log
+  # Should be present in maya audit log
   must_log:
     - "summarization_step_started"
     - "summarization_step_completed"

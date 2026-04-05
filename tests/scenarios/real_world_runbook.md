@@ -1,6 +1,6 @@
 # Real-World Vendor Contract Review - Complete Runbook
 
-This runbook demonstrates a complete, realistic workflow using ONLY actual myna CLI commands. It covers: running a pipeline, monitoring execution, creating checkpoints, handling HITL approvals, and rolling back if needed.
+This runbook demonstrates a complete, realistic workflow using ONLY actual maya CLI commands. It covers: running a pipeline, monitoring execution, creating checkpoints, handling HITL approvals, and rolling back if needed.
 
 ---
 
@@ -9,7 +9,7 @@ This runbook demonstrates a complete, realistic workflow using ONLY actual myna 
 ### Phase 1: Run the Pipeline
 
 ```bash
-myna run ./pipelines/document_review.yml
+maya run ./pipelines/document_review.yml
 ```
 
 **Output:**
@@ -32,7 +32,7 @@ SESSION_ID="sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
 
 ### Check Status in Real-Time
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output (Step 1 - Summarization):**
@@ -47,7 +47,7 @@ Estimated Time Remaining: 45s
 
 Re-run this command to watch progress:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output (Step 2 - Validation):**
@@ -73,7 +73,7 @@ Estimated Time Remaining: 12s
 ### View the Audit Trail
 At any time, view what's happened:
 ```bash
-myna audit $SESSION_ID
+maya audit $SESSION_ID
 ```
 
 **Sample Output (in progress):**
@@ -97,7 +97,7 @@ myna audit $SESSION_ID
 
 If you want to save the current state:
 ```bash
-myna checkpoint $SESSION_ID --label "after_validation"
+maya checkpoint $SESSION_ID --label "after_validation"
 ```
 
 **Output:**
@@ -110,7 +110,7 @@ Step: validation_step
 
 You can create multiple checkpoints:
 ```bash
-myna checkpoint $SESSION_ID --label "pre_report_generation"
+maya checkpoint $SESSION_ID --label "pre_report_generation"
 ```
 
 ---
@@ -119,7 +119,7 @@ myna checkpoint $SESSION_ID --label "pre_report_generation"
 
 Check final status:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output:**
@@ -133,7 +133,7 @@ Result: SUCCESS
 
 View complete audit trail:
 ```bash
-myna audit $SESSION_ID
+maya audit $SESSION_ID
 ```
 
 ---
@@ -146,7 +146,7 @@ When a pipeline step requires manual approval, it pauses and creates a request.
 
 Pipeline runs and creates a HITL request:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output:**
@@ -161,7 +161,7 @@ Message: "Compliance report generated. Please review violations and recommend ac
 
 View the audit trail to see the report:
 ```bash
-myna audit $SESSION_ID
+maya audit $SESSION_ID
 ```
 
 Look for the `report_generation_step_completed` event containing the compliance report:
@@ -181,7 +181,7 @@ Look for the `report_generation_step_completed` event containing the compliance 
 
 After legal team reviews and approves:
 ```bash
-myna approve $SESSION_ID --request-id hitl-req-9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
+maya approve $SESSION_ID --request-id hitl-req-9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
 ```
 
 **Output:**
@@ -196,7 +196,7 @@ Session will continue execution.
 
 Check status again:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output:**
@@ -212,7 +212,7 @@ Result: SUCCESS
 
 If the legal team rejects:
 ```bash
-myna deny $SESSION_ID --request-id hitl-req-9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
+maya deny $SESSION_ID --request-id hitl-req-9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
 ```
 
 **Output:**
@@ -235,7 +235,7 @@ If you need to redo steps, rollback to a previous checkpoint:
 
 Check the audit trail for saved checkpoints:
 ```bash
-myna audit $SESSION_ID
+maya audit $SESSION_ID
 ```
 
 Look for `checkpoint_created` events:
@@ -247,7 +247,7 @@ Look for `checkpoint_created` events:
 ### Rollback to a Checkpoint
 
 ```bash
-myna rollback $SESSION_ID --to after_validation
+maya rollback $SESSION_ID --to after_validation
 ```
 
 **Output:**
@@ -261,13 +261,13 @@ Files archived: report_generation.output, on_complete_hooks.status
 State restored: validation_step.output
 
 Session is now paused at checkpoint: after_validation
-Use: myna resume <session_id> to continue from this point.
+Use: maya resume <session_id> to continue from this point.
 ```
 
 ### Resume After Rollback
 
 ```bash
-myna resume $SESSION_ID
+maya resume $SESSION_ID
 ```
 
 **Output:**
@@ -280,7 +280,7 @@ Status: RUNNING
 
 Check status:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output:**
@@ -300,7 +300,7 @@ Estimated Time Remaining: 15s
 If you need to pause the pipeline mid-execution:
 
 ```bash
-myna pause $SESSION_ID
+maya pause $SESSION_ID
 ```
 
 **Output:**
@@ -313,7 +313,7 @@ Status: PAUSED
 
 Check status:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output:**
@@ -325,7 +325,7 @@ Current Step: validation_step (paused)
 
 Resume:
 ```bash
-myna resume $SESSION_ID
+maya resume $SESSION_ID
 ```
 
 **Output:**
@@ -342,7 +342,7 @@ Status: RUNNING
 If something goes wrong and you need to stop completely:
 
 ```bash
-myna terminate $SESSION_ID
+maya terminate $SESSION_ID
 ```
 
 **Output:**
@@ -356,7 +356,7 @@ Reason: User termination
 
 Check status:
 ```bash
-myna status $SESSION_ID
+maya status $SESSION_ID
 ```
 
 **Output:**
@@ -373,25 +373,25 @@ Last Step: validation_step
 
 ```bash
 # 1. Start pipeline
-$ myna run ./pipelines/document_review.yml
+$ maya run ./pipelines/document_review.yml
 SessionID: sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
 Status: RUNNING
 
 # 2. Check progress
-$ myna status sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
+$ maya status sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
 Status: RUNNING
 Current Step: summarization_step
 
 # ... wait for completion ...
 
 # 3. Final status
-$ myna status sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
+$ maya status sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
 Status: COMPLETED
 Progress: 3/3
 Result: SUCCESS
 
 # 4. View results
-$ myna audit sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
+$ maya audit sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
 [... audit trail showing all steps completed ...]
 [... report_generation_step_completed with compliance_score: 68 ...]
 [... risk_level: HIGH, remediation_required: true ...]
@@ -414,18 +414,18 @@ $ myna audit sess-f1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6
 
 ```bash
 # 1. Start pipeline
-$ myna run ./pipelines/document_review.yml
+$ maya run ./pipelines/document_review.yml
 SessionID: sess-a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
 Status: RUNNING
 
 # 2. Check progress
-$ myna status sess-a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+$ maya status sess-a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
 Status: ERROR
 Error: "validation_step failed: Could not identify expected violations"
 Timestamp: 2026-04-05T14:16:15.234Z
 
 # 3. View audit to debug
-$ myna audit sess-a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+$ maya audit sess-a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
 [... summarization_step_completed ...]
 [... validation_step_started ...]
 [... validation_error: "Only 1 violation found, expected 3" ...]
@@ -441,22 +441,22 @@ $ myna audit sess-a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
 **Recovery:**
 ```bash
 # Fix the test document or pipeline configuration, then run again:
-myna run ./pipelines/document_review.yml
+maya run ./pipelines/document_review.yml
 ```
 
 ---
 
-## Summary of Real Myna Commands Used
+## Summary of Real maya Commands Used
 
 | Command | Purpose |
 |---------|---------|
-| `myna run ./pipelines/document_review.yml` | Start the pipeline |
-| `myna status <session_id>` | Check current progress |
-| `myna audit <session_id>` | View audit trail and events |
-| `myna checkpoint <session_id> --label <name>` | Save a checkpoint |
-| `myna rollback <session_id> --to <label>` | Rollback to checkpoint |
-| `myna pause <session_id>` | Pause execution |
-| `myna resume <session_id>` | Resume from pause or checkpoint |
-| `myna terminate <session_id>` | Stop the session |
-| `myna approve <session_id> --request-id <id>` | Approve HITL request |
-| `myna deny <session_id> --request-id <id>` | Reject HITL request |
+| `maya run ./pipelines/document_review.yml` | Start the pipeline |
+| `maya status <session_id>` | Check current progress |
+| `maya audit <session_id>` | View audit trail and events |
+| `maya checkpoint <session_id> --label <name>` | Save a checkpoint |
+| `maya rollback <session_id> --to <label>` | Rollback to checkpoint |
+| `maya pause <session_id>` | Pause execution |
+| `maya resume <session_id>` | Resume from pause or checkpoint |
+| `maya terminate <session_id>` | Stop the session |
+| `maya approve <session_id> --request-id <id>` | Approve HITL request |
+| `maya deny <session_id> --request-id <id>` | Reject HITL request |

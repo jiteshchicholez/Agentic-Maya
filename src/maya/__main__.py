@@ -1,4 +1,4 @@
-from myna.cli import main
+from maya.cli import main
 
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@ from __future__ import annotations
 from math import sqrt
 from typing import Any
 
-from myna.enums import MemoryTier
-from myna.persistence import PersistenceStore
+from maya.enums import MemoryTier
+from maya.persistence import PersistenceStore
 
 
 class MemoryManager:

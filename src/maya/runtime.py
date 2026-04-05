@@ -11,18 +11,18 @@ from pathlib import Path
 from queue import Empty
 from typing import Any
 
-from myna.audit import AuditClient, AuditLog, audit_worker_main
-from myna.config import AppConfig
-from myna.enums import AgentRole, AgentStatus, MemoryTier, PipelineStatus, RiskLevel
-from myna.governance import ActionRequest, BudgetTracker, GovernanceEngine
-from myna.loader import load_directory_models, load_policy
-from myna.memory import MemoryManager
-from myna.model_client import CompletionResult, OpenAICompatibleModelClient
-from myna.persistence import PersistenceStore
-from myna.policy import PolicyEngine, builtin_policies
-from myna.schemas import ApprovalRequest, CheckpointRecord, MessageEnvelope, PipelineDefinition, PipelineStep, SpawnAgentBlock
-from myna.skills import SkillRegistry
-from myna.utils import ensure_dir, safe_relative_to
+from maya.audit import AuditClient, AuditLog, audit_worker_main
+from maya.config import AppConfig
+from maya.enums import AgentRole, AgentStatus, MemoryTier, PipelineStatus, RiskLevel
+from maya.governance import ActionRequest, BudgetTracker, GovernanceEngine
+from maya.loader import load_directory_models, load_policy
+from maya.memory import MemoryManager
+from maya.model_client import CompletionResult, OpenAICompatibleModelClient
+from maya.persistence import PersistenceStore
+from maya.policy import PolicyEngine, builtin_policies
+from maya.schemas import ApprovalRequest, CheckpointRecord, MessageEnvelope, PipelineDefinition, PipelineStep, SpawnAgentBlock
+from maya.skills import SkillRegistry
+from maya.utils import ensure_dir, safe_relative_to
 
 
 class LocalAuditClient:
@@ -287,7 +287,7 @@ class SessionRuntime:
             self._audit_process = self._ctx.Process(
                 target=audit_worker_main,
                 args=(audit_request_queue, audit_response_queue, str(self.session_dir / "audit.jsonl")),
-                name=f"myna-audit-{self.session_id}",
+                name=f"maya-audit-{self.session_id}",
             )
             self._audit_process.start()
             self._audit_client = AuditClient(audit_request_queue, audit_response_queue)
@@ -297,7 +297,7 @@ class SessionRuntime:
             self._tool_process = self._ctx.Process(
                 target=tool_executor_main,
                 args=(self._tool_request_queue, self._tool_response_queue, str(self.session_dir)),
-                name=f"myna-tool-{self.session_id}",
+                name=f"maya-tool-{self.session_id}",
             )
             self._tool_process.start()
         except PermissionError:
@@ -322,7 +322,7 @@ class SessionRuntime:
             process = self._ctx.Process(
                 target=generic_agent_worker,
                 args=(agent.model_dump(mode="python"), inbound, self._event_queue),
-                name=f"myna-agent-{agent.id}",
+                name=f"maya-agent-{agent.id}",
             )
             process.start()
             self._agent_inbound_queues[agent.id] = inbound
@@ -532,7 +532,7 @@ class SessionRuntime:
             target_agent=action_input.get("target_agent"),
             external_call=external_call,
             requires_critic=step.requires_critic,
-            stateful=step.action_type in {"memory_write"} or tool_name in {"file_write", "myna.file_write"},
+            stateful=step.action_type in {"memory_write"} or tool_name in {"file_write", "maya.file_write"},
             estimated_tokens=estimated_tokens,
             estimated_cost=0.0,
             tool_calls=1 if step.action_type == "tool" else 0,
@@ -688,16 +688,16 @@ class SessionRuntime:
     def _execute_tool(self, agent: SpawnAgentBlock, action_input: dict[str, Any]) -> Any:
         skill_id = action_input.get("skill_id") or action_input.get("tool_name")
         tool_map = {
-            "myna.file_read": "file_read",
-            "myna.file_write": "file_write",
-            "myna.code_exec": "code_exec",
+            "maya.file_read": "file_read",
+            "maya.file_write": "file_write",
+            "maya.code_exec": "code_exec",
             "file_read": "file_read",
             "file_write": "file_write",
             "code_exec": "code_exec",
         }
-        if skill_id in {"myna.audit_query", "audit_query"}:
+        if skill_id in {"maya.audit_query", "audit_query"}:
             return {"entries": self.audit_entries()}
-        if skill_id in {"myna.human_request", "human_request"}:
+        if skill_id in {"maya.human_request", "human_request"}:
             approval = ApprovalRequest(
                 session_id=self.session_id,
                 agent_id=agent.id,
@@ -770,7 +770,7 @@ class SessionRuntime:
         process = self._ctx.Process(
             target=generic_agent_worker,
             args=(subagent.model_dump(mode="python"), inbound, self._event_queue),
-            name=f"myna-agent-{subagent.id}",
+            name=f"maya-agent-{subagent.id}",
         )
         process.start()
         self._agent_inbound_queues[subagent.id] = inbound
@@ -864,7 +864,7 @@ class SessionRuntime:
             approval = self.store.get_approval(request_id)
             if approval and approval["state"] != "pending":
                 return
-            raw = input(f"myna[{self.session_id}] approval {request_id}> ").strip()
+            raw = input(f"maya[{self.session_id}] approval {request_id}> ").strip()
             if not raw:
                 continue
             self.handle_runtime_command(raw)

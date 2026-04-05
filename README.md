@@ -2,10 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.12+-blue) ![License](https://img.shields.io/badge/License-MIT-green) ![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)
 
-
-**Agentic Maya** — Governed multi-agent orchestration with YAML pipelines, policies, and skills for AI workflows.
-
-website: [Agentic Maya](https://agentic-maya.vercel.app/)
+**Agentic Maya** — Governed multi-agent orchestration with YAML pipelines, policies, and skills for enterprise-grade AI workflows.
 
 ## What It Does
 
@@ -35,25 +32,25 @@ pip install -e .
 
 ```bash
 # Run a sample pipeline
-myna run ./pipelines/document_review.yml
+maya run ./pipelines/demo_pipeline.yml
 
 # Check execution status
-myna status <session_id>
+maya status <session_id>
 
 # View detailed audit trail
-myna audit <session_id>
+maya audit <session_id>
 ```
 
 ### CLI Commands
 
-- `myna run <pipeline.yml>` - Execute a pipeline
-- `myna status <session_id>` - Check pipeline status
-- `myna audit <session_id>` - View audit logs
-- `myna checkpoint <session_id> --label <name>` - Create checkpoint
-- `myna rollback <session_id> --to <checkpoint>` - Rollback to checkpoint
-- `myna approve <session_id> --request-id <id>` - Approve pending requests
-- `myna pause <session_id>` - Pause execution
-- `myna terminate <session_id>` - Stop pipeline
+- `maya run <pipeline.yml>` - Execute a pipeline
+- `maya status <session_id>` - Check pipeline status
+- `maya audit <session_id>` - View audit logs
+- `maya checkpoint <session_id> --label <name>` - Create checkpoint
+- `maya rollback <session_id> --to <checkpoint>` - Rollback to checkpoint
+- `maya approve <session_id> --request-id <id>` - Approve pending requests
+- `maya pause <session_id>` - Pause execution
+- `maya terminate <session_id>` - Stop pipeline
 
 ## Architecture
 
@@ -85,21 +82,21 @@ myna audit <session_id>
 
 ## Documentation
 
-📖 **[Full Documentation](https://agentic-maya.vercel.app/)** - Complete guides and API reference
+📖 **[Full Documentation](website/index.html)** - Complete guides and API reference
 
-- [Core Concepts](https://agentic-maya.vercel.app/docs)
-- [Pipeline Guide](https://agentic-maya.vercel.app/pipelines)
-- [Policy Reference](https://agentic-maya.vercel.app/policies)
-- [Skills Registry](https://agentic-maya.vercel.app/skills)
+- [Core Concepts](website/docs/index.html)
+- [Pipeline Guide](website/docs/pipelines.html)
+- [Policy Reference](website/docs/policies.html)
+- [Skills Registry](website/docs/skills.html)
 
 ## Project Structure
 
 ```
-agentic-myna/
+agentic-maya/
 ├── main.py                 # CLI entry point
 ├── pyproject.toml          # Project configuration
-├── myna.toml              # Runtime defaults
-├── src/myna/              # Core package
+├── maya.toml              # Runtime defaults
+├── src/maya/              # Core package
 │   ├── cli.py            # Command-line interface
 │   ├── runtime.py        # Pipeline execution engine
 │   ├── governance.py     # Policy enforcement
@@ -123,7 +120,7 @@ agentic-myna/
 
 ```bash
 git clone <repository-url>
-cd agentic-myna
+cd agentic-maya
 pip install -e .[dev]
 ```
 
@@ -137,7 +134,7 @@ python -m pytest
 python -m pytest tests/test_governance.py -v
 
 # Run with coverage
-python -m pytest --cov=src/myna
+python -m pytest --cov=src/maya
 ```
 
 ### Building Documentation

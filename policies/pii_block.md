@@ -52,5 +52,5 @@ PII handling requires:
 5. Audit trail documentation
 
 ## Related Policies
-- `myna.audit_all_actions` - Data handling audit trail
+- `maya.audit_all_actions` - Data handling audit trail
 - Security incident response procedures

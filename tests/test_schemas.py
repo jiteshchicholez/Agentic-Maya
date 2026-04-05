@@ -8,8 +8,8 @@ from pydantic import ValidationError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from myna.loader import load_pipeline
-from myna.schemas import SpawnAgentBlock
+from maya.loader import load_pipeline
+from maya.schemas import SpawnAgentBlock
 
 
 class SchemaTests(unittest.TestCase):

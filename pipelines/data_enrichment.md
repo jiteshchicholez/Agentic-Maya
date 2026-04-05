@@ -47,8 +47,8 @@ The Data Enrichment Pipeline provides a comprehensive framework for transforming
 - **Tool Calls**: Max 45 per execution
 
 ## Governance
-- Complete audit trail enforcement via `myna.audit_all_actions`
-- Cost control via `myna.budget_ceiling`
+- Complete audit trail enforcement via `maya.audit_all_actions`
+- Cost control via `maya.budget_ceiling`
 - External integration restrictions
 - Quality threshold enforcement (minimum 85% score)
 

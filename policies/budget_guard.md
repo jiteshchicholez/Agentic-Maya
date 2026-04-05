@@ -35,5 +35,5 @@ This policy integrates with the agent execution runtime to track cumulative cost
 5. Implement token-efficient techniques
 
 ## Related Policies
-- `myna.budget_ceiling` - Global pipeline cost limit
-- `myna.audit_all_actions` - Cost tracking and audit
+- `maya.budget_ceiling` - Global pipeline cost limit
+- `maya.audit_all_actions` - Cost tracking and audit

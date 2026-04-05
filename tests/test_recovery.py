@@ -8,11 +8,11 @@ from uuid import uuid4
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from myna.config import AppConfig
-from myna.enums import MemoryTier
-from myna.model_client import FakeModelClient
-from myna.runtime import SessionRuntime
-from myna.schemas import PipelineDefinition
+from maya.config import AppConfig
+from maya.enums import MemoryTier
+from maya.model_client import FakeModelClient
+from maya.runtime import SessionRuntime
+from maya.schemas import PipelineDefinition
 
 
 def build_minimal_pipeline() -> PipelineDefinition:

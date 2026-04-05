@@ -24,15 +24,15 @@ agents:
       4. Delegate quality verification to the QA agent
       5. Aggregate results and store enriched dataset
     skills:
-      - "myna.checkpoint"
-      - "myna.memory_write"
-      - "myna.summarize"
+      - "maya.checkpoint"
+      - "maya.memory_write"
+      - "maya.summarize"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.checkpoint"
-        - "myna.memory_write"
-        - "myna.summarize"
+        - "maya.checkpoint"
+        - "maya.memory_write"
+        - "maya.summarize"
       memory: "write"
       spawn_agents: true
       external_calls: false
@@ -61,13 +61,13 @@ agents:
       4. Duplicate or anomalous records
       Generate validation report with error tracking.
     skills:
-      - "myna.memory_read"
-      - "myna.memory_write"
+      - "maya.memory_read"
+      - "maya.memory_write"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.memory_read"
-        - "myna.memory_write"
+        - "maya.memory_read"
+        - "maya.memory_write"
       memory: "write"
       spawn_agents: false
       external_calls: false
@@ -96,13 +96,13 @@ agents:
       4. Merging with reference data
       Ensure consistency and accuracy throughout transformations.
     skills:
-      - "myna.memory_read"
-      - "myna.memory_write"
+      - "maya.memory_read"
+      - "maya.memory_write"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.memory_read"
-        - "myna.memory_write"
+        - "maya.memory_read"
+        - "maya.memory_write"
       memory: "write"
       spawn_agents: false
       external_calls: false
@@ -131,13 +131,13 @@ agents:
       4. Compliance with quality standards
       Assign quality score and final approval status.
     skills:
-      - "myna.memory_read"
-      - "myna.audit_query"
+      - "maya.memory_read"
+      - "maya.audit_query"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.memory_read"
-        - "myna.audit_query"
+        - "maya.memory_read"
+        - "maya.audit_query"
       memory: "read"
       spawn_agents: false
       external_calls: false
@@ -215,9 +215,9 @@ global_budget:
   max_wall_time_sec: 600
 
 global_policies:
-  - "myna.audit_all_actions"
-  - "myna.budget_ceiling"
-  - "myna.no_external_without_permission"
+  - "maya.audit_all_actions"
+  - "maya.budget_ceiling"
+  - "maya.no_external_without_permission"
   - "org.pii_block"
   - "org.external_call_gate"
   - "org.critical_escalation"

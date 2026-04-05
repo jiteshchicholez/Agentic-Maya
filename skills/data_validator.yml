@@ -12,9 +12,9 @@ outputs:
   - error_report
   - anomaly_detection
 required_tools:
-  - myna.memory_read
-  - myna.memory_write
-  - myna.audit_query
+  - maya.memory_read
+  - maya.memory_write
+  - maya.audit_query
 required_permissions:
   - memory.read
   - memory.write

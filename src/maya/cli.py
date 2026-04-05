@@ -7,13 +7,13 @@ from pathlib import Path
 
 import typer
 
-from myna.config import load_config
-from myna.enums import AgentStatus
-from myna.loader import load_pipeline, load_policy, load_skill
-from myna.runtime import OfflineSessionAdmin, SessionRuntime
-from myna.utils import ensure_dir
+from maya.config import load_config
+from maya.enums import AgentStatus
+from maya.loader import load_pipeline, load_policy, load_skill
+from maya.runtime import OfflineSessionAdmin, SessionRuntime
+from maya.utils import ensure_dir
 
-app = typer.Typer(add_completion=False, help="Agentic Myna CLI")
+app = typer.Typer(add_completion=False, help="Agentic maya CLI")
 
 
 def _project_root(root: str) -> Path:
@@ -144,7 +144,7 @@ def register_policy(path: str, root: str = typer.Option(".", help="Project root.
 def help(topic: str | None = typer.Argument(None)) -> None:
     topics = {
         "commands": "run, status, audit, checkpoint, rollback, pause, resume, terminate, approve, deny, register-skill, register-policy",
-        "governance": "Agentic Myna enforces intent, permissions, budgets, sandboxing, HITL, audit, and rollback controls.",
+        "governance": "Agentic maya enforces intent, permissions, budgets, sandboxing, HITL, audit, and rollback controls.",
         "pipelines": "Pipelines are YAML files under pipelines/ with agents, flow steps, and global budgets.",
     }
     if topic:

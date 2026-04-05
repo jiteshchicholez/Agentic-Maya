@@ -71,7 +71,7 @@ The Report Writer Skill enables professional document generation from structured
 ## Permissions Required
 - **File Access**: Write to workspace
 - **Memory**: Read data and analysis results
-- **Tool Calls**: `myna.file_write`, `myna.memory_read`, `myna.summarize`
+- **Tool Calls**: `maya.file_write`, `maya.memory_read`, `maya.summarize`
 
 ## Performance
 - **Latency SLO**: 60 seconds

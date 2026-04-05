@@ -281,25 +281,25 @@ execution_notes: |
   
   1. Empty Document Test
      - Create empty PDF: tests/fixtures/empty_contract.pdf
-     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/empty_contract.pdf
+     - Run: maya run-pipeline document_review --input-file ./tests/fixtures/empty_contract.pdf
      
   2. PII-Heavy Document Test
      - Create document with SSN/Credit Card patterns
-     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/vendor_contract_with_pii.pdf
+     - Run: maya run-pipeline document_review --input-file ./tests/fixtures/vendor_contract_with_pii.pdf
      
   3. Fallback Model Test
      - Modify document_review.yml to use unavailable model
-     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/sample_vendor_contract.pdf
+     - Run: maya run-pipeline document_review --input-file ./tests/fixtures/sample_vendor_contract.pdf
      - Verify fallback_model_used in audit trail
      
   4. Budget Exhaustion Test
      - Create large 5000-page PDF
      - Set budget_tokens: 100000 in document_review.yml
-     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/large_contract_5000_pages.pdf
+     - Run: maya run-pipeline document_review --input-file ./tests/fixtures/large_contract_5000_pages.pdf
      
   5. CRITICAL Escalation Test
      - Create contract with known major violations
-     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/critically_non_compliant_contract.pdf
+     - Run: maya run-pipeline document_review --input-file ./tests/fixtures/critically_non_compliant_contract.pdf
      - Verify critical_escalation_triggered in audit trail
   
   Expected Test Results:

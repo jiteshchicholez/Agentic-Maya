@@ -51,7 +51,7 @@ The Data Validator Skill provides comprehensive validation capabilities for ensu
 ## Permissions Required
 - **Memory**: Read/write for storing results
 - **Audit**: Query permissions for audit trail
-- **Tool Calls**: `myna.memory_read`, `myna.memory_write`, `myna.audit_query`
+- **Tool Calls**: `maya.memory_read`, `maya.memory_write`, `maya.audit_query`
 
 ## Error Categories
 - `SCHEMA_MISMATCH` - Field missing or type incorrect

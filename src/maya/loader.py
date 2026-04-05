@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from myna.schemas import PipelineDefinition, PolicyDefinition, SkillDefinition
+from maya.schemas import PipelineDefinition, PolicyDefinition, SkillDefinition
 
 
 def _load_yaml(path: Path) -> dict:

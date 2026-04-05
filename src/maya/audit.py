@@ -5,8 +5,8 @@ from multiprocessing.queues import Queue
 from pathlib import Path
 from typing import Any
 
-from myna.schemas import AuditEntry
-from myna.utils import ensure_dir, stable_hash
+from maya.schemas import AuditEntry
+from maya.utils import ensure_dir, stable_hash
 
 
 class AuditLog:

@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from myna.enums import (
+from maya.enums import (
     AgentRole,
     LocalOrCloud,
     MemoryAccess,
@@ -16,7 +16,7 @@ from myna.enums import (
     Priority,
     RiskLevel,
 )
-from myna.utils import utc_now
+from maya.utils import utc_now
 
 
 class PermissionsBlock(BaseModel):

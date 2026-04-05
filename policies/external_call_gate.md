@@ -55,5 +55,5 @@ To call external endpoints:
 ✗ Third-party logging services without review
 
 ## Related Policies
-- `myna.no_external_without_permission` - Global external call restriction
-- `myna.audit_all_actions` - Complete audit trail
+- `maya.no_external_without_permission` - Global external call restriction
+- `maya.audit_all_actions` - Complete audit trail

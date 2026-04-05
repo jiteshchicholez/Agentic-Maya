@@ -32,7 +32,7 @@ The File Summarizer Skill provides intelligent content extraction and summarizat
 ## Permissions Required
 - **File Access**: Read permission for workspace files
 - **Memory**: Write access for storing summaries
-- **Tool Calls**: `myna.file_read`, `myna.summarize`, `myna.memory_write`
+- **Tool Calls**: `maya.file_read`, `maya.summarize`, `maya.memory_write`
 
 ## Key Features
 ✓ Multi-format file support
@@ -46,9 +46,9 @@ The File Summarizer Skill provides intelligent content extraction and summarizat
   ```yaml
   permissions:
     tools:
-      - myna.file_read
-      - myna.summarize
-      - myna.memory_write
+      - maya.file_read
+      - maya.summarize
+      - maya.memory_write
     memory: write
     file_access:
       - workspace

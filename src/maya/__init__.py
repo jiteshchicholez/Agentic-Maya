@@ -1,4 +1,4 @@
-"""Agentic Myna package."""
+"""Agentic maya package."""
 
 __all__ = ["__version__"]
 

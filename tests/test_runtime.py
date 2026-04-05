@@ -8,10 +8,10 @@ from uuid import uuid4
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from myna.config import AppConfig
-from myna.model_client import FakeModelClient
-from myna.runtime import SessionRuntime
-from myna.schemas import PipelineDefinition
+from maya.config import AppConfig
+from maya.model_client import FakeModelClient
+from maya.runtime import SessionRuntime
+from maya.schemas import PipelineDefinition
 
 
 def build_runtime_pipeline() -> PipelineDefinition:
@@ -45,7 +45,7 @@ def build_runtime_pipeline() -> PipelineDefinition:
                     "provider": "openai_compatible",
                     "local_or_cloud": "local",
                     "system_prompt": "Draft technical summaries.",
-                    "permissions": {"tools": ["myna.file_write"], "memory": "write", "spawn_agents": False, "external_calls": False, "file_access": ["workspace"]},
+                    "permissions": {"tools": ["maya.file_write"], "memory": "write", "spawn_agents": False, "external_calls": False, "file_access": ["workspace"]},
                     "budget": {"max_tokens_per_agent": 200, "max_tool_calls": 20, "max_cost_usd": 2.0, "max_wall_time_sec": 60},
                 },
                 {
@@ -69,7 +69,7 @@ def build_runtime_pipeline() -> PipelineDefinition:
                     "provider": "openai_compatible",
                     "local_or_cloud": "local",
                     "system_prompt": "Execute tools.",
-                    "permissions": {"tools": ["myna.file_write"], "memory": "none", "spawn_agents": False, "external_calls": False, "file_access": ["workspace"]},
+                    "permissions": {"tools": ["maya.file_write"], "memory": "none", "spawn_agents": False, "external_calls": False, "file_access": ["workspace"]},
                     "budget": {"max_tokens_per_agent": 200, "max_tool_calls": 20, "max_cost_usd": 2.0, "max_wall_time_sec": 60},
                 },
                 {
@@ -104,7 +104,7 @@ def build_runtime_pipeline() -> PipelineDefinition:
                     "requires_critic": True,
                     "action_type": "tool",
                     "action_input": {
-                        "skill_id": "myna.file_write",
+                        "skill_id": "maya.file_write",
                         "path": "workspace/report.txt",
                         "content": "{{step:1.text}}",
                     },
@@ -137,7 +137,7 @@ class RuntimeTests(unittest.TestCase):
             self.assertTrue(report.step_outputs[1]["fallback_used"])
             self.assertEqual(report.step_outputs[1]["model_used"], "backup-model")
             self.assertIn("critic", report.step_outputs[2])
-            written = project_root / ".myna" / "sessions" / report.session_id / "agents" / "specialist" / "workspace" / "report.txt"
+            written = project_root / ".maya" / "sessions" / report.session_id / "agents" / "specialist" / "workspace" / "report.txt"
             self.assertTrue(written.exists())
             self.assertEqual(written.read_text(encoding="utf-8"), "Governed runtime summary.")
         finally:

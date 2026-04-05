@@ -37,8 +37,8 @@ The Document Review Pipeline is a sophisticated multi-agent system designed to p
 - **Tool Calls**: Max 40 total per pipeline execution
 
 ## Governance
-- Enforces complete audit trail via `myna.audit_all_actions`
-- Maintains cost controls via `myna.budget_ceiling`
+- Enforces complete audit trail via `maya.audit_all_actions`
+- Maintains cost controls via `maya.budget_ceiling`
 - Requires explicit permission for external communications
 
 ## Output

@@ -70,7 +70,7 @@ Useful for: Troubleshooting, pattern analysis
 ## Permissions Required
 - **File Access**: Read workspace files  
 - **Memory**: Read episodic and persistent memory
-- **Tool Calls**: `myna.file_read`, `myna.memory_read`, `myna.summarize`
+- **Tool Calls**: `maya.file_read`, `maya.memory_read`, `maya.summarize`
 
 ## Performance
 - **Latency SLO**: 25 seconds

@@ -5,10 +5,10 @@ from pathlib import Path
 from time import monotonic
 from typing import Any
 
-from myna.enums import MemoryAccess, MemoryTier, PolicyAction, PolicyScope, RiskLevel
-from myna.policy import PolicyDecision, PolicyEngine
-from myna.schemas import BudgetBlock, GlobalBudgetBlock, PermissionsBlock, SpawnAgentBlock
-from myna.utils import safe_relative_to
+from maya.enums import MemoryAccess, MemoryTier, PolicyAction, PolicyScope, RiskLevel
+from maya.policy import PolicyDecision, PolicyEngine
+from maya.schemas import BudgetBlock, GlobalBudgetBlock, PermissionsBlock, SpawnAgentBlock
+from maya.utils import safe_relative_to
 
 
 RISK_RANK = {

@@ -7,9 +7,9 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from myna.enums import MemoryTier
-from myna.schemas import ApprovalRequest, CheckpointRecord, MessageEnvelope, PolicyDefinition, SkillDefinition, SpawnAgentBlock
-from myna.utils import ensure_dir, utc_now
+from maya.enums import MemoryTier
+from maya.schemas import ApprovalRequest, CheckpointRecord, MessageEnvelope, PolicyDefinition, SkillDefinition, SpawnAgentBlock
+from maya.utils import ensure_dir, utc_now
 
 
 class PersistenceStore:
@@ -18,7 +18,7 @@ class PersistenceStore:
         if db_path is not None:
             self.db_path = db_path
         elif project_root is not None:
-            self.db_path = project_root / ".myna" / "myna.db"
+            self.db_path = project_root / ".maya" / "maya.db"
         else:
             self.db_path = Path(":memory:")
             self._persistent_connection = sqlite3.connect(str(self.db_path))

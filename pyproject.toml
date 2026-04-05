@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-maya"
-version = "0.1.0"
+version = "0.2.0"
 description = "Agentic Maya v1 Python CLI MVP"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-myna = "myna.cli:main"
+maya = "maya.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

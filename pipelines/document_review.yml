@@ -24,13 +24,13 @@ agents:
       4. Collect verdicts and produce consolidated assessment
       5. Declare intent before delegating tasks
     skills:
-      - "myna.checkpoint"
-      - "myna.summarize"
+      - "maya.checkpoint"
+      - "maya.summarize"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.checkpoint"
-        - "myna.summarize"
+        - "maya.checkpoint"
+        - "maya.summarize"
       memory: "write"
       spawn_agents: true
       external_calls: false
@@ -59,13 +59,13 @@ agents:
       4. Language quality and professionalism
       Provide a detailed assessment with specific feedback and a quality score 0-100.
     skills:
-      - "myna.summarize"
-      - "myna.memory_read"
+      - "maya.summarize"
+      - "maya.memory_read"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.summarize"
-        - "myna.memory_read"
+        - "maya.summarize"
+        - "maya.memory_read"
       memory: "write"
       spawn_agents: false
       external_calls: false
@@ -94,13 +94,13 @@ agents:
       4. Contractual obligations
       Assign a compliance status: PASS, CONDITIONAL, or FAIL with justification.
     skills:
-      - "myna.audit_query"
-      - "myna.memory_read"
+      - "maya.audit_query"
+      - "maya.memory_read"
     memory_tier: "episodic"
     permissions:
       tools:
-        - "myna.audit_query"
-        - "myna.memory_read"
+        - "maya.audit_query"
+        - "maya.memory_read"
       memory: "read"
       spawn_agents: false
       external_calls: false
@@ -164,9 +164,9 @@ global_budget:
   max_wall_time_sec: 600
 
 global_policies:
-  - "myna.audit_all_actions"
-  - "myna.budget_ceiling"
-  - "myna.no_external_without_permission"
+  - "maya.audit_all_actions"
+  - "maya.budget_ceiling"
+  - "maya.no_external_without_permission"
   - "org.pii_block"
   - "org.external_call_gate"
   - "org.critical_escalation"
