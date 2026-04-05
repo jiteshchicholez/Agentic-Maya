@@ -32,7 +32,7 @@ pip install -e .
 
 ```bash
 # Run a sample pipeline
-myna run ./pipelines/demo_pipeline.yml
+myna run ./pipelines/document_review.yml
 
 # Check execution status
 myna status <session_id>
@@ -82,12 +82,12 @@ myna audit <session_id>
 
 ## Documentation
 
-📖 **[Full Documentation](website/index.html)** - Complete guides and API reference
+📖 **[Full Documentation](agentic-maya.vercel.app)** - Complete guides and API reference
 
-- [Core Concepts](website/docs/index.html)
-- [Pipeline Guide](website/docs/pipelines.html)
-- [Policy Reference](website/docs/policies.html)
-- [Skills Registry](website/docs/skills.html)
+- [Core Concepts](agentic-maya.vercel.app/docs/)
+- [Pipeline Guide](agentic-maya.vercel.app/pipelines)
+- [Policy Reference](agentic-maya.vercel.app/policies)
+- [Skills Registry](agentic-maya.vercel.app/skills)
 
 ## Project Structure
 
