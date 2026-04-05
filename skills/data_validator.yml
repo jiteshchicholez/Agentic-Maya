@@ -1,0 +1,34 @@
+id: agentic.data_validator
+name: Data Validator Skill
+version: 1.0.0
+description: Comprehensive data validation skill that checks schema compliance, enforces data types, validates constraints, detects anomalies, and generates detailed validation reports.
+inputs:
+  - data_set
+  - schema_definition
+  - validation_rules
+  - strict_mode
+outputs:
+  - validation_results
+  - error_report
+  - anomaly_detection
+required_tools:
+  - myna.memory_read
+  - myna.memory_write
+  - myna.audit_query
+required_permissions:
+  - memory.read
+  - memory.write
+governance_level: LOW
+audit_required: true
+author: agentic.maya
+tags:
+  - data_quality
+  - validation
+  - schema_checking
+  - compliance
+enabled: true
+metadata:
+  created_at: 2026-04-05T00:00:00Z
+  supported_schemas: ["json-schema", "avro", "custom"]
+  performance_slo_sec: 45
+  version_notes: "Includes anomaly detection and detailed reporting"

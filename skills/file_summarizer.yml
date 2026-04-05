@@ -1,0 +1,33 @@
+id: agentic.file_summarizer
+name: File Summarizer Skill
+version: 1.0.0
+description: Intelligent file content summarization skill that extracts key insights, main points, and actionable information from various file types including documentation, code, and structured data.
+inputs:
+  - file_path
+  - summary_style
+  - max_length
+outputs:
+  - summary_text
+  - key_points
+  - metadata
+required_tools:
+  - myna.file_read
+  - myna.summarize
+  - myna.memory_write
+required_permissions:
+  - file_access
+  - memory.write
+governance_level: MEDIUM
+audit_required: true
+author: agentic.maya
+tags:
+  - file_processing
+  - summarization
+  - content_analysis
+  - documentation
+enabled: true
+metadata:
+  created_at: 2026-04-05T00:00:00Z
+  supported_formats: ["md", "txt", "json", "yaml", "py"]
+  performance_slo_sec: 30
+  version_notes: "Initial release with multi-format support"

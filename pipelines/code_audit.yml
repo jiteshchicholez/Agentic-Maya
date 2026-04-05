@@ -1,0 +1,223 @@
+id: code_audit
+name: Code Audit Pipeline
+description: Automated code quality and security audit pipeline with architecture analysis, vulnerability scanning, and best practices evaluation.
+version: "1.0.0"
+trigger: "file_event"
+root_intent: "Execute comprehensive code audit analyzing quality, security, and architectural compliance."
+
+orchestrator: "audit_orchestrator"
+
+agents:
+  - id: "audit_orchestrator"
+    role: "ORCHESTRATOR"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are the code audit orchestrator.
+      Coordinate the following analysis steps:
+      1. Delegate code structure analysis to architecture analyst
+      2. Delegate security analysis to security reviewer
+      3. Delegate quality metrics to quality evaluator
+      4. Synthesize findings into comprehensive audit report
+    skills:
+      - "myna.checkpoint"
+      - "myna.summarize"
+      - "myna.file_read"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.checkpoint"
+        - "myna.summarize"
+        - "myna.file_read"
+      memory: "write"
+      spawn_agents: true
+      external_calls: false
+      file_access: ["workspace"]
+    budget:
+      max_tokens_per_agent: 8192
+      max_tool_calls: 15
+      max_cost_usd: 0.40
+      max_wall_time_sec: 180
+    max_subagents: 3
+    timeout_sec: 180
+
+  - id: "architecture_analyst"
+    role: "SPECIALIST"
+    model: "gpt-4"
+    fallback_model: "claude-3-sonnet"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a software architecture analyst.
+      Evaluate code for:
+      1. Architectural patterns and design principles
+      2. Modularity and separation of concerns
+      3. Dependency management
+      4. Scalability considerations
+      Provide findings with severity levels: CRITICAL, HIGH, MEDIUM, LOW, INFO.
+    skills:
+      - "myna.file_read"
+      - "myna.memory_write"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.file_read"
+        - "myna.memory_write"
+      memory: "write"
+      spawn_agents: false
+      external_calls: false
+      file_access: ["workspace"]
+    budget:
+      max_tokens_per_agent: 8192
+      max_tool_calls: 12
+      max_cost_usd: 0.30
+      max_wall_time_sec: 120
+    max_subagents: 0
+    timeout_sec: 120
+
+  - id: "security_reviewer"
+    role: "SPECIALIST"
+    model: "gpt-4"
+    fallback_model: "claude-3-opus"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a security and vulnerability reviewer.
+      Identify and document:
+      1. Potential security vulnerabilities (OWASP Top 10)
+      2. Unsafe patterns and risky operations
+      3. Authentication and authorization issues
+      4. Data protection gaps
+      Rate findings with CVSS severity scoring.
+    skills:
+      - "myna.file_read"
+      - "myna.memory_write"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.file_read"
+        - "myna.memory_write"
+      memory: "write"
+      spawn_agents: false
+      external_calls: false
+      file_access: ["workspace"]
+    budget:
+      max_tokens_per_agent: 8192
+      max_tool_calls: 12
+      max_cost_usd: 0.35
+      max_wall_time_sec: 120
+    max_subagents: 0
+    timeout_sec: 120
+
+  - id: "quality_evaluator"
+    role: "CRITIC"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a code quality evaluator.
+      Assess metrics for:
+      1. Code readability and maintainability
+      2. Test coverage and testing strategy
+      3. Documentation completeness
+      4. Adherence to coding standards
+      Provide actionable improvement recommendations.
+    skills:
+      - "myna.file_read"
+      - "myna.memory_read"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.file_read"
+        - "myna.memory_read"
+      memory: "read"
+      spawn_agents: false
+      external_calls: false
+      file_access: ["workspace"]
+    budget:
+      max_tokens_per_agent: 6144
+      max_tool_calls: 10
+      max_cost_usd: 0.20
+      max_wall_time_sec: 90
+    max_subagents: 0
+    timeout_sec: 90
+
+flow:
+  - step: 1
+    agent: "audit_orchestrator"
+    task: "Initialize code audit session and create checkpoint."
+    depends_on: []
+    on_fail: "halt"
+    retry_max: 0
+    checkpoint_after: true
+    outputs:
+      - key: "audit_session"
+        store_in: "episodic"
+
+  - step: 2
+    agent: "architecture_analyst"
+    task: "Analyze codebase architecture and design patterns."
+    depends_on: [1]
+    on_fail: "continue"
+    retry_max: 1
+    checkpoint_after: true
+    outputs:
+      - key: "architecture_findings"
+        store_in: "episodic"
+
+  - step: 3
+    agent: "security_reviewer"
+    task: "Conduct comprehensive security and vulnerability assessment."
+    depends_on: [1]
+    on_fail: "continue"
+    retry_max: 1
+    checkpoint_after: true
+    outputs:
+      - key: "security_findings"
+        store_in: "episodic"
+
+  - step: 4
+    agent: "quality_evaluator"
+    task: "Evaluate code quality metrics and standards compliance."
+    depends_on: [1]
+    on_fail: "continue"
+    retry_max: 0
+    checkpoint_after: true
+    outputs:
+      - key: "quality_findings"
+        store_in: "episodic"
+
+  - step: 5
+    agent: "audit_orchestrator"
+    task: "Synthesize all findings and produce comprehensive audit report."
+    depends_on: [2, 3, 4]
+    on_fail: "halt"
+    retry_max: 0
+    outputs:
+      - key: "audit_report"
+        store_in: "persistent"
+
+global_budget:
+  max_tokens_per_agent: 65536
+  max_tool_calls: 60
+  max_cost_usd: 2.50
+  max_wall_time_sec: 900
+
+global_policies:
+  - "myna.audit_all_actions"
+  - "myna.budget_ceiling"
+  - "myna.require_critic_for_high_risk"
+  - "org.pii_block"
+  - "org.external_call_gate"
+  - "org.critical_escalation"
+
+on_complete:
+  - "write_audit_summary"
+  - "archive_session"

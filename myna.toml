@@ -1,0 +1,18 @@
+[provider]
+name = "openai_compatible"
+base_url = "http://localhost:11434/v1"
+api_key = "not-needed"
+chat_model = "gpt-oss:120b-cloud"
+fallback_model = "gpt-oss:120b-cloud"
+embedding_model = "nomic-embed-text"
+local_or_cloud = "local"
+
+[paths]
+session_root = ".myna/sessions"
+skill_dir = "skills"
+policy_dir = "policies"
+pipeline_dir = "pipelines"
+
+[limits]
+default_max_subagents = 3
+default_timeout_sec = 300

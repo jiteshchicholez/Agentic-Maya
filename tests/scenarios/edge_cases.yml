@@ -1,0 +1,308 @@
+---
+# Edge Case Test Suite for Vendor Contract Compliance Review
+# Tests error handling, policy enforcement, and boundary conditions
+test_suite_id: vendor_contract_edge_cases_001
+test_suite_name: Vendor Contract Compliance Edge Cases
+framework_version: 1.0
+created_date: 2026-04-05
+
+edge_cases:
+
+  # ============================================================================
+  # TEST CASE 1: Empty Document Test
+  # ============================================================================
+  - test_id: edge_case_001
+    test_name: Empty Document Handling
+    description: System should gracefully handle empty or whitespace-only PDFs
+    
+    test_input:
+      doc_path: "./tests/fixtures/empty_contract.pdf"
+      doc_size_bytes: 0
+      frameworks: ["GDPR", "SOC2"]
+    
+    expected_behavior:
+      pipeline_status: "COMPLETED"
+      verdict: "FAIL"
+      compliance_score: 0
+      violations_found: 0
+    
+    policy_behavior:
+      pii_block_policy: "NOT_TRIGGERED"
+      budget_guard_policy: "NOT_TRIGGERED"
+      external_call_gate_policy: "NOT_TRIGGERED"
+      critical_escalation_policy: "NOT_TRIGGERED"
+    
+    audit_expectations:
+      - "summarization_step_started"
+      - "file_is_empty_or_invalid"
+      - "data_validator_rejected_empty_input"
+      - "validation_step_failed_gracefully"
+      - "report_generation_skipped"
+      - "escalation_status: DOCUMENT_INVALID"
+    
+    pass_criteria:
+      - pipeline completes without crashing
+      - error message is user-friendly and descriptive
+      - audit trail captures error reason
+      - no downstream steps execute after validation fails
+      - session marked as COMPLETED (not ERROR)
+    
+    fail_criteria:
+      - pipeline status is ERROR or TIMEOUT
+      - no error message provided
+      - downstream steps execute despite validation failure
+      - session requires manual intervention
+
+  # ============================================================================
+  # TEST CASE 2: PII-Heavy Document Test
+  # ============================================================================
+  - test_id: edge_case_002
+    test_name: PII-Heavy Document Detection
+    description: System should detect and block documents with excessive PII (SSN, credit cards, personal data)
+    
+    test_input:
+      doc_path: "./tests/fixtures/vendor_contract_with_pii.pdf"
+      doc_size_bytes: 45000
+      pii_patterns: ["SSN", "CREDIT_CARD", "EMAIL_PERSONAL", "PHONE_PERSONAL"]
+      frameworks: ["GDPR", "SOC2"]
+    
+    expected_behavior:
+      pipeline_status: "COMPLETED_WITH_POLICY_BLOCK"
+      verdict: "BLOCKED"
+      compliance_score: 0
+      violations_found: 0
+      escalation_triggered: true
+    
+    policy_behavior:
+      pii_block_policy: "TRIGGERED"
+      pii_block_escalation_target: "HUMAN"
+      pii_block_audit_event: "org.pii_block_escalated_to_human"
+      budget_guard_policy: "NOT_TRIGGERED"
+      external_call_gate_policy: "NOT_TRIGGERED"
+      critical_escalation_policy: "NOT_TRIGGERED"
+    
+    audit_expectations:
+      - "summarization_step_started"
+      - "pii_patterns_detected_in_sample"
+      - "org.pii_block_policy_triggered"
+      - "escalation_target: HUMAN"
+      - "audit_on_trigger: true"
+      - "cooldown_sec: 0"
+      - "validation_step_skipped"
+      - "report_generation_skipped"
+      - "session_escalation_logged"
+      - "waiting_for_human_decision"
+    
+    pass_criteria:
+      - pii_block policy correctly triggers on first detection
+      - escalation_target set to HUMAN (not processed automatically)
+      - pipeline stops before validation step
+      - audit trail clearly documents PII reason
+      - human notification sent (if HITL integration enabled)
+      - session awaits manual review decision
+    
+    fail_criteria:
+      - pipeline continues to validation despite PII detection
+      - pii_block policy does not trigger
+      - document processed without human escalation
+      - audit trail missing PII detection events
+
+  # ============================================================================
+  # TEST CASE 3: Missing Fallback Model Test
+  # ============================================================================
+  - test_id: edge_case_003
+    test_name: Fallback Model Activation
+    description: System should smoothly switch to fallback_model when primary model unavailable
+    
+    test_input:
+      doc_path: "./tests/fixtures/sample_vendor_contract.pdf"
+      primary_model: "gpt-5-experimental"  # Intentionally unavailable
+      fallback_model: "gpt-4-turbo"         # Should be used instead
+      frameworks: ["GDPR", "SOC2"]
+    
+    expected_behavior:
+      pipeline_status: "COMPLETED"
+      verdict: "REVIEW_REQUIRED"
+      primary_model_used: false
+      fallback_model_used: true
+      compliance_score: 62  # May be slightly lower with fallback
+      violations_found: 3
+    
+    policy_behavior:
+      all_policies: "NORMAL_EXECUTION"
+    
+    audit_expectations:
+      - "summarization_step_started"
+      - "primary_model_not_available: gpt-5-experimental"
+      - "fallback_model_activated: gpt-4-turbo"
+      - "model_fallback_logged"
+      - "validation_step_completed"
+      - "report_generation_completed"
+      - "execution_note: used_fallback_model"
+    
+    pass_criteria:
+      - pipeline completes using fallback model
+      - compliance report generated (though with fallback)
+      - audit clearly documents fallback model usage
+      - all violations still identified (with possible minor variance)
+      - no user intervention required
+      - session status: COMPLETED
+    
+    fail_criteria:
+      - pipeline fails when primary model unavailable
+      - fallback model not activated
+      - report marked as invalid due to fallback usage
+      - user must manually provide alternative model
+      - audit does not document model switch
+
+  # ============================================================================
+  # TEST CASE 4: Budget Exhaustion Test
+  # ============================================================================
+  - test_id: edge_case_004
+    test_name: Budget Limit Enforcement
+    description: System should halt processing when token budget exhausted during analysis
+    
+    test_input:
+      doc_path: "./tests/fixtures/large_contract_5000_pages.pdf"
+      doc_size_bytes: 2500000
+      estimated_tokens_required: 450000
+      allocated_budget_tokens: 100000  # Intentionally too small
+      frameworks: ["GDPR", "SOC2"]
+    
+    expected_behavior:
+      pipeline_status: "COMPLETED_WITH_BUDGET_LIMIT"
+      verdict: "INCOMPLETE"
+      compliance_score: 0
+      violations_found: 0  # Processing halted before completion
+      budget_exhausted_at_step: "validation"
+    
+    policy_behavior:
+      budget_guard_policy: "TRIGGERED"
+      budget_guard_escalation_target: "ORCHESTRATOR"
+      budget_guard_audit_event: "org.budget_guard_limit_exceeded"
+      budget_guard_action: "HALT_PROCESSING"
+    
+    audit_expectations:
+      - "summarization_step_started"
+      - "summarization_step_token_usage: 60000"
+      - "summarization_step_completed"
+      - "validation_step_started"
+      - "validation_step_token_usage: 50000"
+      - "total_tokens_used: 110000"
+      - "org.budget_guard_triggered"
+      - "budget_ceiling_exceeded: 110000 > 100000"
+      - "escalation_target: ORCHESTRATOR"
+      - "validation_step_halted"
+      - "report_generation_skipped"
+      - "partial_results_available: true"
+    
+    pass_criteria:
+      - budget_guard policy correctly detects threshold
+      - processing halts at budget limit
+      - partial results available (what was processed before halt)
+      - escalation_target: ORCHESTRATOR (not HUMAN)
+      - audit clearly documents budget breakdown by step
+      - session marked COMPLETED (not ERROR)
+      - user notified to increase budget or reduce doc size
+    
+    fail_criteria:
+      - pipeline continues past budget limit
+      - budget_guard policy does not trigger
+      - no partial results available
+      - session fails with ERROR status
+      - no escalation issued to ORCHESTRATOR
+
+  # ============================================================================
+  # TEST CASE 5: CRITICAL Violation Escalation Test
+  # ============================================================================
+  - test_id: edge_case_005
+    test_name: CRITICAL Violation Auto-Escalation
+    description: System should automatically escalate when multiple CRITICAL violations detected
+    
+    test_input:
+      doc_path: "./tests/fixtures/critically_non_compliant_contract.pdf"
+      frameworks: ["GDPR", "SOC2"]
+      violation_count_critical: 2
+      violation_count_high: 3
+      violation_count_medium: 4
+    
+    expected_behavior:
+      pipeline_status: "COMPLETED_WITH_ESCALATION"
+      verdict: "FAIL"
+      compliance_score: 15
+      violations_found: 9
+      critical_escalation_triggered: true
+    
+    policy_behavior:
+      budget_guard_policy: "NOT_TRIGGERED"
+      pii_block_policy: "NOT_TRIGGERED"
+      external_call_gate_policy: "NOT_TRIGGERED"
+      critical_escalation_policy: "TRIGGERED"
+      critical_escalation_target: "BOTH"  # ORCHESTRATOR + HUMAN
+    
+    audit_expectations:
+      - "summarization_step_completed"
+      - "validation_step_completed"
+      - "critical_violations_detected: 2"
+      - "high_severity_violations_detected: 3"
+      - "org.critical_escalation_triggered"
+      - "escalation_target: BOTH"
+      - "escalating_to_orchestrator: true"
+      - "escalating_to_human: true"
+      - "report_generation_completed"
+      - "escalation_status: CRITICAL_REVIEW_REQUIRED"
+      - "human_notification_sent: true"
+      - "orchestrator_notification_sent: true"
+      - "audit_on_trigger: true"
+    
+    pass_criteria:
+      - critical_escalation policy correctly detects threshold (2+ CRITICAL)
+      - escalation_target: BOTH (both ORCHESTRATOR and HUMAN)
+      - report generated with all violations documented
+      - compliance_score reflects CRITICAL nature (< 30)
+      - audit clearly documents which violations triggered escalation
+      - both ORCHESTRATOR and HUMAN notified
+      - session awaits dual approval (ORCHESTRATOR + HUMAN)
+      - escalation event timestamp recorded
+    
+    fail_criteria:
+      - critical_escalation policy does not trigger despite CRITICAL violations
+      - escalation sent only to ORCHESTRATOR (not HUMAN)
+      - report generation skipped (should complete even with escalation)
+      - audit missing escalation events
+      - session marked as COMPLETED without escalation markers
+      - no notifications sent
+
+# ============================================================================
+# EXECUTION INSTRUCTIONS
+# ============================================================================
+execution_notes: |
+  Each edge case test should be run independently:
+  
+  1. Empty Document Test
+     - Create empty PDF: tests/fixtures/empty_contract.pdf
+     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/empty_contract.pdf
+     
+  2. PII-Heavy Document Test
+     - Create document with SSN/Credit Card patterns
+     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/vendor_contract_with_pii.pdf
+     
+  3. Fallback Model Test
+     - Modify document_review.yml to use unavailable model
+     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/sample_vendor_contract.pdf
+     - Verify fallback_model_used in audit trail
+     
+  4. Budget Exhaustion Test
+     - Create large 5000-page PDF
+     - Set budget_tokens: 100000 in document_review.yml
+     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/large_contract_5000_pages.pdf
+     
+  5. CRITICAL Escalation Test
+     - Create contract with known major violations
+     - Run: myna run-pipeline document_review --input-file ./tests/fixtures/critically_non_compliant_contract.pdf
+     - Verify critical_escalation_triggered in audit trail
+  
+  Expected Test Results:
+  - All 5 edge cases should result in session status: COMPLETED (not FAILED)
+  - Each test exercises different policy enforcement path
+  - Audit trail should provide complete visibility into why each case was handled differently

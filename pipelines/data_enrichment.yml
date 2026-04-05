@@ -1,0 +1,227 @@
+id: data_enrichment
+name: Data Enrichment Pipeline
+description: Intelligent data processing pipeline with validation, transformation, and enrichment from external sources while maintaining quality and governance standards.
+version: "1.0.0"
+trigger: "scheduled"
+root_intent: "Execute data enrichment workflow with validation, transformation, and quality assurance."
+
+orchestrator: "enrichment_orchestrator"
+
+agents:
+  - id: "enrichment_orchestrator"
+    role: "ORCHESTRATOR"
+    model: "gpt-4"
+    fallback_model: "claude-3-opus"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are the data enrichment orchestrator.
+      Manage the enrichment pipeline:
+      1. Receive input data and enrichment specifications
+      2. Delegate validation to the data validator
+      3. Delegate transformation to the enrichment specialist
+      4. Delegate quality verification to the QA agent
+      5. Aggregate results and store enriched dataset
+    skills:
+      - "myna.checkpoint"
+      - "myna.memory_write"
+      - "myna.summarize"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.checkpoint"
+        - "myna.memory_write"
+        - "myna.summarize"
+      memory: "write"
+      spawn_agents: true
+      external_calls: false
+      file_access: ["workspace"]
+    budget:
+      max_tokens_per_agent: 6144
+      max_tool_calls: 12
+      max_cost_usd: 0.30
+      max_wall_time_sec: 150
+    max_subagents: 3
+    timeout_sec: 150
+
+  - id: "validation_specialist"
+    role: "SPECIALIST"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a data validation specialist.
+      Validate input data for:
+      1. Schema compliance and type correctness
+      2. Required field presence and non-nullability
+      3. Range and constraint violations
+      4. Duplicate or anomalous records
+      Generate validation report with error tracking.
+    skills:
+      - "myna.memory_read"
+      - "myna.memory_write"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.memory_read"
+        - "myna.memory_write"
+      memory: "write"
+      spawn_agents: false
+      external_calls: false
+      file_access: []
+    budget:
+      max_tokens_per_agent: 4096
+      max_tool_calls: 8
+      max_cost_usd: 0.18
+      max_wall_time_sec: 90
+    max_subagents: 0
+    timeout_sec: 90
+
+  - id: "enrichment_specialist"
+    role: "SPECIALIST"
+    model: "gpt-4"
+    fallback_model: "claude-3-sonnet"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a data enrichment specialist.
+      Transform and enrich data by:
+      1. Applying data transformation rules
+      2. Normalizing values across datasets
+      3. Enriching with derived fields and computed metrics
+      4. Merging with reference data
+      Ensure consistency and accuracy throughout transformations.
+    skills:
+      - "myna.memory_read"
+      - "myna.memory_write"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.memory_read"
+        - "myna.memory_write"
+      memory: "write"
+      spawn_agents: false
+      external_calls: false
+      file_access: []
+    budget:
+      max_tokens_per_agent: 6144
+      max_tool_calls: 10
+      max_cost_usd: 0.25
+      max_wall_time_sec: 120
+    max_subagents: 0
+    timeout_sec: 120
+
+  - id: "qa_agent"
+    role: "CRITIC"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a data quality assurance agent.
+      Verify enriched data for:
+      1. Completeness and integrity
+      2. Transformation accuracy verification
+      3. Enrichment quality and relevance
+      4. Compliance with quality standards
+      Assign quality score and final approval status.
+    skills:
+      - "myna.memory_read"
+      - "myna.audit_query"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.memory_read"
+        - "myna.audit_query"
+      memory: "read"
+      spawn_agents: false
+      external_calls: false
+      file_access: []
+    budget:
+      max_tokens_per_agent: 4096
+      max_tool_calls: 8
+      max_cost_usd: 0.15
+      max_wall_time_sec: 60
+    max_subagents: 0
+    timeout_sec: 60
+
+flow:
+  - step: 1
+    agent: "enrichment_orchestrator"
+    task: "Initialize data enrichment session and prepare data context."
+    depends_on: []
+    on_fail: "halt"
+    retry_max: 0
+    checkpoint_after: true
+    outputs:
+      - key: "enrichment_session"
+        store_in: "episodic"
+
+  - step: 2
+    agent: "validation_specialist"
+    task: "Validate input data integrity and schema compliance."
+    depends_on: [1]
+    on_fail: "halt"
+    retry_max: 0
+    checkpoint_after: true
+    outputs:
+      - key: "validation_results"
+        store_in: "episodic"
+
+  - step: 3
+    agent: "enrichment_specialist"
+    task: "Transform and enrich data according to specifications."
+    depends_on: [2]
+    on_fail: "halt"
+    retry_max: 1
+    checkpoint_after: true
+    outputs:
+      - key: "enriched_data"
+        store_in: "episodic"
+
+  - step: 4
+    agent: "qa_agent"
+    task: "Verify enriched data quality and approve for release."
+    depends_on: [3]
+    on_fail: "continue"
+    retry_max: 0
+    checkpoint_after: true
+    conditions:
+      - type: "quality_threshold"
+        min_score: 85
+    outputs:
+      - key: "qa_approval"
+        store_in: "episodic"
+
+  - step: 5
+    agent: "enrichment_orchestrator"
+    task: "Finalize enrichment process and archive results."
+    depends_on: [4]
+    on_fail: "halt"
+    retry_max: 0
+    outputs:
+      - key: "enrichment_complete"
+        store_in: "persistent"
+
+global_budget:
+  max_tokens_per_agent: 32768
+  max_tool_calls: 45
+  max_cost_usd: 1.25
+  max_wall_time_sec: 600
+
+global_policies:
+  - "myna.audit_all_actions"
+  - "myna.budget_ceiling"
+  - "myna.no_external_without_permission"
+  - "org.pii_block"
+  - "org.external_call_gate"
+  - "org.critical_escalation"
+
+on_complete:
+  - "write_audit_summary"
+  - "archive_session"

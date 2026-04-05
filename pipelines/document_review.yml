@@ -1,0 +1,176 @@
+id: document_review
+name: Document Review Pipeline
+description: Multi-stage document analysis pipeline with content extraction, relevance assessment, and compliance verification for enterprise documentation.
+version: "1.0.0"
+trigger: "user_message"
+root_intent: "Execute a comprehensive document review workflow with trained specialist agents evaluating content quality and compliance."
+
+orchestrator: "review_orchestrator"
+
+agents:
+  - id: "review_orchestrator"
+    role: "ORCHESTRATOR"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are the orchestrator for the document review pipeline.
+      Responsibilities:
+      1. Receive document content and review objectives
+      2. Delegate content analysis to the content specialist
+      3. Delegate compliance review to the policy reviewer
+      4. Collect verdicts and produce consolidated assessment
+      5. Declare intent before delegating tasks
+    skills:
+      - "myna.checkpoint"
+      - "myna.summarize"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.checkpoint"
+        - "myna.summarize"
+      memory: "write"
+      spawn_agents: true
+      external_calls: false
+      file_access: []
+    budget:
+      max_tokens_per_agent: 4096
+      max_tool_calls: 10
+      max_cost_usd: 0.20
+      max_wall_time_sec: 120
+    max_subagents: 2
+    timeout_sec: 120
+
+  - id: "content_specialist"
+    role: "SPECIALIST"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a document content specialist.
+      Analyze the provided document for:
+      1. Content clarity and structure
+      2. Technical accuracy of claims
+      3. Completeness of required sections
+      4. Language quality and professionalism
+      Provide a detailed assessment with specific feedback and a quality score 0-100.
+    skills:
+      - "myna.summarize"
+      - "myna.memory_read"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.summarize"
+        - "myna.memory_read"
+      memory: "write"
+      spawn_agents: false
+      external_calls: false
+      file_access: []
+    budget:
+      max_tokens_per_agent: 6144
+      max_tool_calls: 8
+      max_cost_usd: 0.25
+      max_wall_time_sec: 90
+    max_subagents: 0
+    timeout_sec: 90
+
+  - id: "policy_reviewer"
+    role: "CRITIC"
+    model: "gpt-4"
+    fallback_model: "gpt-4-turbo"
+    base_url: "https://api.openai.com/v1"
+    provider: "openai"
+    local_or_cloud: "cloud"
+    system_prompt: |
+      You are a compliance and policy reviewer.
+      Evaluate the document for:
+      1. Regulatory compliance (GDPR, HIPAA if applicable)
+      2. Company policy adherence
+      3. Data protection requirements
+      4. Contractual obligations
+      Assign a compliance status: PASS, CONDITIONAL, or FAIL with justification.
+    skills:
+      - "myna.audit_query"
+      - "myna.memory_read"
+    memory_tier: "episodic"
+    permissions:
+      tools:
+        - "myna.audit_query"
+        - "myna.memory_read"
+      memory: "read"
+      spawn_agents: false
+      external_calls: false
+      file_access: []
+    budget:
+      max_tokens_per_agent: 4096
+      max_tool_calls: 6
+      max_cost_usd: 0.15
+      max_wall_time_sec: 60
+    max_subagents: 0
+    timeout_sec: 60
+
+flow:
+  - step: 1
+    agent: "review_orchestrator"
+    task: "Initialize document review session and create checkpoint."
+    depends_on: []
+    on_fail: "halt"
+    retry_max: 0
+    checkpoint_after: true
+    outputs:
+      - key: "session_checkpoint"
+        store_in: "episodic"
+
+  - step: 2
+    agent: "content_specialist"
+    task: "Analyze document content structure, clarity, and technical accuracy."
+    depends_on: [1]
+    on_fail: "halt"
+    retry_max: 1
+    checkpoint_after: true
+    outputs:
+      - key: "content_assessment"
+        store_in: "episodic"
+
+  - step: 3
+    agent: "policy_reviewer"
+    task: "Verify compliance with applicable regulations and company policies."
+    depends_on: [1]
+    on_fail: "halt"
+    retry_max: 0
+    checkpoint_after: true
+    outputs:
+      - key: "compliance_assessment"
+        store_in: "episodic"
+
+  - step: 4
+    agent: "review_orchestrator"
+    task: "Consolidate assessments and produce final review report."
+    depends_on: [2, 3]
+    on_fail: "halt"
+    retry_max: 0
+    outputs:
+      - key: "final_review_report"
+        store_in: "persistent"
+
+global_budget:
+  max_tokens_per_agent: 32768
+  max_tool_calls: 40
+  max_cost_usd: 1.50
+  max_wall_time_sec: 600
+
+global_policies:
+  - "myna.audit_all_actions"
+  - "myna.budget_ceiling"
+  - "myna.no_external_without_permission"
+  - "org.pii_block"
+  - "org.external_call_gate"
+  - "org.critical_escalation"
+
+on_complete:
+  - "write_audit_summary"
+  - "archive_session"

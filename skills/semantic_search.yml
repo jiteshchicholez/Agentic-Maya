@@ -1,0 +1,34 @@
+id: agentic.semantic_search
+name: Semantic Search Skill
+version: 1.0.0
+description: Intelligent semantic search capability using embeddings and vector similarity to find contextually relevant content across documents, code, and structured data repositories.
+inputs:
+  - query_text
+  - search_scope
+  - similarity_threshold
+  - max_results
+outputs:
+  - search_results
+  - relevance_scores
+  - context_snippets
+required_tools:
+  - myna.file_read
+  - myna.memory_read
+  - myna.summarize
+required_permissions:
+  - file_access
+  - memory.read
+governance_level: MEDIUM
+audit_required: true
+author: agentic.maya
+tags:
+  - search
+  - semantic_analysis
+  - embeddings
+  - content_discovery
+enabled: true
+metadata:
+  created_at: 2026-04-05T00:00:00Z
+  embedding_model: "text-embedding-3-small"
+  performance_slo_sec: 25
+  version_notes: "Enhanced vector search and relevance ranking"

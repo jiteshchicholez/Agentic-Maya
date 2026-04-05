@@ -1,0 +1,25 @@
+id: policy.pii_block
+name: PII Block Policy
+scope: AGENT
+trigger:
+  and:
+    - "==":
+        - var: action.type
+        - memory_write
+    - "==":
+        - var: action.contains_pii
+        - true
+action: DENY
+message: Personal Identifiable Information (PII) detected in memory write operation. Operation blocked per data protection requirements.
+log_level: ERROR
+notify_human: true
+audit_on_trigger: true
+escalation_target: HUMAN
+cooldown_sec: 0
+enabled: true
+author: security.team
+metadata:
+  created_at: 2026-04-05T00:00:00Z
+  version: "1.0.0"
+  category: "data_protection"
+  compliance: ["GDPR", "CCPA", "HIPAA"]

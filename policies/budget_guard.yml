@@ -1,0 +1,24 @@
+id: policy.budget_guard
+name: Budget Guard Policy
+scope: AGENT
+trigger:
+  and:
+    - "==":
+        - var: action.type
+        - budget_check
+    - ">=":
+        - var: action.cost_usd
+        - 0.50
+action: WARN
+message: Agent cost exceeding $0.50 USD threshold. Budget consumption is escalating. Review and optimize token usage.
+log_level: WARN
+notify_human: false
+audit_on_trigger: true
+escalation_target: HUMAN
+cooldown_sec: 0
+enabled: true
+author: governance.team
+metadata:
+  created_at: 2026-04-05T00:00:00Z
+  version: "1.0.0"
+  category: "budget_management"

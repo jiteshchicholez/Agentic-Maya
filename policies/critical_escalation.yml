@@ -1,0 +1,29 @@
+id: policy.critical_escalation
+name: Critical Escalation Policy
+scope: PIPELINE
+trigger:
+  or:
+    - "==":
+        - var: action.severity
+        - CRITICAL
+    - "==":
+        - var: action.error_code
+        - "5xx"
+    - ">=":
+        - var: action.cost_usd
+        - 2.00
+action: ESCALATE
+message: Critical condition detected. Pipeline executing at CRITICAL severity level. Automatic escalation to management team initiated.
+log_level: CRITICAL
+notify_human: true
+audit_on_trigger: true
+escalation_target: BOTH
+cooldown_sec: 0
+enabled: true
+author: operations.team
+metadata:
+  created_at: 2026-04-05T00:00:00Z
+  version: "1.0.0"
+  category: "incident_response"
+  escalation_target: "management@org.team"
+  escalation_delay_sec: 60

@@ -1,0 +1,126 @@
+---
+scenario_id: vendor_contract_review_001
+scenario_name: Vendor Contract Compliance Review
+description: Audit vendor contract PDF for GDPR + SOC2 violations
+framework_version: 1.0
+created_date: 2026-04-05
+
+# Test Input Configuration
+test_input:
+  # Path to test document (sample vendor contract)
+  doc_path: "./tests/fixtures/sample_vendor_contract.pdf"
+  
+  # Compliance frameworks to validate against
+  frameworks:
+    - GDPR
+    - SOC2
+  
+  # Expected violations we should find in test document
+  expected_violations:
+    - type: "GDPR_DATA_RETENTION"
+      severity: "HIGH"
+      description: "Contract lacks explicit data retention policy"
+    - type: "SOC2_ACCESS_CONTROL"
+      severity: "MEDIUM"
+      description: "Missing SOC2 Type II access control requirements"
+    - type: "GDPR_DATA_PROCESSING"
+      severity: "HIGH"
+      description: "No Data Processing Agreement (DPA) clause found"
+
+# Expected Pipeline Output
+expected_output:
+  # Overall compliance verdict
+  verdict: "REVIEW_REQUIRED"  # Options: PASS, FAIL, REVIEW_REQUIRED
+  
+  # Minimum acceptable compliance score (0-100)
+  min_score: 65
+  
+  # Report structure expected from report_writer skill
+  report_fields:
+    - compliance_score
+    - frameworks_checked
+    - violations_found
+    - risk_level
+    - remediation_required
+    - escalation_status
+    - audit_timestamp
+
+# Pass/Fail Criteria for Each Pipeline Step
+pass_fail_criteria:
+  
+  # Step 1: File Summarization (file_summarizer skill)
+  summarization_step:
+    must_complete: true
+    success_criteria:
+      - key_terms_extracted: true
+      - extraction_confidence_threshold: 0.85
+      - required_fields:
+          - vendor_name
+          - service_scope
+          - data_responsibilities
+          - compliance_requirements
+    pass_if: "Confidence scores > 85% on all key terms"
+    fail_if: "Extraction fails or confidence < 75%"
+  
+  # Step 2: Validation (data_validator skill)
+  validation_step:
+    must_complete: true
+    success_criteria:
+      - schema_validation_passes: true
+      - all_violations_identified: true
+      - violation_count_minimum: 1
+      - violation_count_expected: 3
+    pass_if: "Identifies >= 3 expected violations with correct severity levels"
+    fail_if: "Misses 2+ violations or incorrectly categorizes severity"
+  
+  # Step 3: Report Generation (report_writer skill)
+  report_generation_step:
+    must_complete: true
+    success_criteria:
+      - output_format: "JSON"
+      - required_fields:
+          - compliance_score: "numeric, 0-100"
+          - violations_found: "array of violation objects"
+          - risk_level: "HIGH|MEDIUM|LOW"
+          - remediation_required: "boolean"
+      - report_size_minimum: 500
+      - report_size_maximum: 50000
+    pass_if: "Valid JSON report with all required fields populated, compliance_score >= min_score"
+    fail_if: "Report missing fields, invalid JSON, or compliance_score < min_score"
+
+# Audit Trail Expectations
+audit_expectations:
+  # Should be present in myna audit log
+  must_log:
+    - "summarization_step_started"
+    - "summarization_step_completed"
+    - "pii_block_policy_checked"
+    - "validation_step_started"
+    - "validation_step_completed"
+    - "report_generation_step_started"
+    - "report_generation_step_completed"
+    - "on_complete_write_audit_summary"
+    - "on_complete_archive_session"
+  
+  # Policies that should be invoked
+  policy_invocations:
+    - policy_id: "org.pii_block"
+      should_trigger: false
+      reason: "Clean contract document, no PII expected"
+    - policy_id: "org.budget_guard"
+      should_trigger: false
+      reason: "Standard-size contract within budget"
+    - policy_id: "org.external_call_gate"
+      should_trigger: false
+      reason: "Audit-only, no external calls"
+    - policy_id: "org.critical_escalation"
+      should_trigger: false
+      reason: "Violations present but not CRITICAL"
+
+# Session Execution Flags
+execution_config:
+  timeout_seconds: 300
+  max_retries: 1
+  checkpoint_verification: true
+  audit_trail_required: true
+  human_approval_required: false
